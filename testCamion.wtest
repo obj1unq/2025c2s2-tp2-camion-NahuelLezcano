@@ -211,7 +211,7 @@ describe "Test del camión" {
     camion.accidentarCamion()
 
     assert.equals(robot, bumblebee.modo())
-    assert.equals(45, residuosRadioactivos.peso()) 
+    assert.equals(30, residuosRadioactivos.peso()) 
     assert.equals(70, arenaAGranel.peso())
     assert.equals(88, paqueteLadrillos.cantLadrillos())
     assert.notThat(bateriaAntiaerea.tieneMisiles())

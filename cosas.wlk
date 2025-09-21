@@ -121,5 +121,5 @@ object embalajeDeSeguridad {
 
 	method bultos() = 2
 
-	method accidentar() { contenido.accidentar() }
+	method accidentar() {}
 }
