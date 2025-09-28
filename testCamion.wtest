@@ -110,6 +110,12 @@ describe "Test del camión" {
     assert.notThat(camion.puedeCircularEnRuta(20)) 
   }
 
+  test "El contenedor no puede cargar algo que ya contiene" {
+    contenedor.cargar(knightRider)
+    
+    assert.throwsException({ contenedor.cargar(knightRider) })
+  }
+
   test "Contenedor y embalaje de seguridad" {
     assert.equals(100, contenedor.peso())
     assert.equals(0, contenedor.nivelPeligrosidad())
@@ -242,8 +248,8 @@ describe "Tests sobre el transporte" {
     arenaAGranel.peso(50)
     camion.cargar(arenaAGranel)
 
-    almacen.agregarAlAlmacen(knightRider)
-    almacen.agregarAlAlmacen(residuosRadioactivos)
+    almacen.agregarEnAlmacen(knightRider)
+    almacen.agregarEnAlmacen(residuosRadioactivos)
   }
 
   test "Caso: Ruta 9 exitoso" {

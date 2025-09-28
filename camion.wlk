@@ -41,13 +41,15 @@ object camion {
 
 	method superanElNivel(unNivel) = cosas.filter({obj => obj.nivelPeligrosidad() > unNivel}) 
 
-	method masPeligrososQue(unObjeto) = cosas.filter({obj => obj.nivelPeligrosidad() > unObjeto.nivelPeligrosidad()})
+	method masPeligrososQue(unObjeto) = self.superanElNivel(unObjeto.nivelPeligrosidad()) 
 
 	method puedeCircularEnRuta(limite) = !self.estaExcedido() and self.ningunoSupera(limite)
 
 	method ningunoSupera(limite) = cosas.all({obj => obj.nivelPeligrosidad() < limite})  
 
-	method hayAlgoQuePeseEntre(min, max) = cosas.any({obj => obj.peso() >= min and obj.peso() <= max}) 
+	method hayAlgoQuePeseEntre(min, max) = cosas.any({obj => self.pesaEntre(obj, min, max)}) 
+
+	method pesaEntre(cosa, min, max) = cosa.peso() >= min and cosa.peso() <= max
 
 	method cosaMasPesada() = cosas.max({obj => obj.peso()}) 
 
@@ -58,12 +60,12 @@ object camion {
 	method accidentarCamion() { cosas.forEach({obj => obj.accidentar()}) }
 
 	method transportar(destino, camino) {	
-		camino.soportaElViajeDe(self)
+		camino.validarTransporte(self)
 		self.descargarEnElAlmacen(destino)
 	}
 
 	method descargarEnElAlmacen(almacen) {
-		almacen.almacen().addAll(cosas)
+		almacen.almacenarCosas(cosas) 
 		cosas.clear()
 	}
 }
@@ -72,14 +74,18 @@ object camion {
 object almacen {
 	const property almacen = #{}
 
-	method agregarAlAlmacen(unaCosa) {	
+	method agregarEnAlmacen(unaCosa) {	// Este metódo es usado en el test, sirve para que el almacen pueda contener cosas antes que el camión llegue.
 		almacen.add(unaCosa)  
+	}
+
+	method almacenarCosas(cosas) {
+		almacen.addAll(cosas)
 	}
 }
 
 
 object ruta9 {
-	method soportaElViajeDe(unCamion) {
+	method validarTransporte(unCamion) {
 		
 		if(!unCamion.puedeCircularEnRuta(20)) {
 			self.error("El viaje por ruta 9 no se puede realizar.")
@@ -91,7 +97,7 @@ object ruta9 {
 object caminosVecinales {
 	var property maximoPermitido = 0
 	
-	method soportaElViajeDe(unCamion) {
+	method validarTransporte(unCamion) {
 		
 		if(unCamion.peso() > maximoPermitido) {
 			self.error("El viaje por los caminos vecinales no se puede realizar")

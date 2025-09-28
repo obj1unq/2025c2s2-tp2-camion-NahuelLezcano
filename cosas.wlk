@@ -52,10 +52,10 @@ object paqueteLadrillos {
 	method nivelPeligrosidad() = 2
 
 	method bultos() {
-		if (0 <= cantLadrillos and cantLadrillos <= 100) {
+		if (self.laCantidadDeLadrillosEstaEntre(0, 100)) {
 			return 1
 		}
-        else if (101 <= cantLadrillos and cantLadrillos <= 300) {
+        else if (self.laCantidadDeLadrillosEstaEntre(101, 300)) {
 			return 2
 		}
 		else {
@@ -63,8 +63,10 @@ object paqueteLadrillos {
 		}        
 	}
 
+	method laCantidadDeLadrillosEstaEntre(min, max) = min <= cantLadrillos and cantLadrillos <= max
+
 	method accidentar() { cantLadrillos = (cantLadrillos - 12).max(0) }
-}
+} 
 
 object bateriaAntiaerea {
 	var property tieneMisiles = false
@@ -80,7 +82,7 @@ object bateriaAntiaerea {
 	method bultos() = if(tieneMisiles) 2 else 1
 
 	method accidentar() { self.descargarBateria() }
-}
+} 
 
 object residuosRadioactivos {
 	var property peso = 0
@@ -97,7 +99,16 @@ object contenedor {
 	
 	method pesoPropio() = 100 
 
-	method cargar(unaCosa) { contenido.add(unaCosa) }
+	method cargar(unaCosa) { 
+		self.validarSiPoseeAlObjeto(unaCosa)
+		contenido.add(unaCosa)
+	}
+
+	method validarSiPoseeAlObjeto(unaCosa) {
+		if (contenido.contains(unaCosa)) {
+			self.error("El contenedor ya posee al objeto.")
+		}
+	} 
 
 	method nivelPeligrosidad() = if(contenido.isEmpty()) 0 else self.elementoMasPeligroso().nivelPeligrosidad()
 
